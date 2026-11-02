@@ -2,7 +2,7 @@
 	"FileVersion": 3,
 	"EngineAssociation": "5.7",
 	"Category": "",
-	"Description": "World Sim – Industrie & Leben",
+	"Description": "World Sim - Industrie & Leben",
 	"Modules": [
 		{
 			"Name": "WorldSim",
