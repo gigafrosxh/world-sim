@@ -4,31 +4,29 @@ Bezieht sich auf die Anforderungs-IDs in [ANFORDERUNGEN.md](./ANFORDERUNGEN.md).
 
 ## Technische Architektur
 
+Seit der Entscheidung für Unreal Engine 5.7 ist `WorldSim/` der Hauptweg. Der Web-Prototyp in `prototype-web/` bleibt als Referenz.
+
 ```
-src/
-  sim/        Reine Simulation (kein DOM, kein Three.js) – testbar mit Vitest
-    clock.ts       Spielzeit, Geschwindigkeiten, feste Ticks
-    economy.ts     Konten, Buchungen, Monatsabrechnung
-    company.ts     Firmengründung, Schritte, Personal
-    construction.ts Bauprojekte, Phasen, laufende Kosten
-    casino.ts      Roulette mit echten Wahrscheinlichkeiten
-    state.ts       Gesamter Spielstand + Speichern/Laden
-  data/       Spieltabellen (Länder, Branchen, Gebäude, Maschinen, Casinos, Geschäfte)
-  render/     Three.js-Darstellung
-    worldMap.ts    Länder, Grenzen, Straßen, Bahn, Häfen, Städte
-    cityView.ts    Grundstücke, Straßen, Gebäude der Stadt
-    models.ts      Prozedurale Low-Poly-Modelle (Fabrik, Haus, Kran, Bagger …)
-    player.ts      Spielerfigur + Third-Person-Kamera
-  ui/         HTML-Overlay (Leisten, Panels, Dialoge)
-scripts/
-  prepare-data.mjs Natural-Earth-Rohdaten → kompakte JSON-Dateien
-public/data/  Vorverarbeitete Kartendaten
+WorldSim/
+  Source/WorldSim/
+    Public|Private/Sim/   Reiner C++20-Kern ohne Unreal (namespace WS), mit Tests in Tests/
+      SimData            Länder-Wirtschaftsdaten, Branchen, Gebäude, Maschinen, Casinos, Geschäfte
+      CityGen            Deterministische Städte um echte Stadtzentren
+      Game               Uhr, Konten, Firma, Grundstücke, Bau in Phasen, Aufträge, Kredite, Reisen, Roulette
+      SaveGame           Spielstand als versioniertes Textformat
+    WorldSimSubsystem    Lädt Daten, lässt die Zeit laufen, Blueprint-Funktionen und Ereignisse
+    WSWorldMapActor      Länder, Grenzen, Autobahnen, Bahn, Fähren, Häfen (Procedural Mesh)
+    WSCityActor          Grundstücke, Straßen, Gebäude, Baustellen mit Maschinen und Arbeitern
+    WSCameraPawn         Strategie-/Städtebau-Kamera und Spielfigur
+    WSHUD, WSGameMode    Overlay, Sonne, Tastenbelegung
+  Content/Data/          Vorverarbeitete Natural-Earth-Daten (JSON)
+prototype-web/           Browser-Prototyp (TypeScript, Three.js, Vitest)
 ```
 
 **Grundsätze**
 - Simulation und Darstellung sind getrennt. Die Darstellung liest den Zustand, die UI löst Aktionen aus.
 - Die Uhr läuft in festen Simulationsschritten; bei hohen Geschwindigkeiten werden mehrere Schritte pro Frame gerechnet (X-04).
-- Weltkarte in Mercator-Projektion als flache 3D-Ebene; die Stadtansicht ist eine eigene Szene in Metern.
+- Weltkarte in Mercator-Projektion als flache Ebene, um die aktuelle Stadt herum maßstabsgetreu (1 Unreal-Meter = 1 echter Meter). Stadt und Karte liegen in derselben Szene, Hineinzoomen führt nahtlos in die Stadt.
 - Alle Modelle werden im Code aus Grundformen gebaut (keine fremden Assets, L-03).
 
 ## Phasen

@@ -1,0 +1,18 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "5.7",
+	"Category": "",
+	"Description": "World Sim - Industrie & Leben",
+	"Modules": [
+		{
+			"Name": "WorldSim",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": ["Engine"]
+		}
+	],
+	"Plugins": [
+		{ "Name": "ProceduralMeshComponent", "Enabled": true },
+		{ "Name": "ModelingToolsEditorMode", "Enabled": true, "TargetAllowList": ["Editor"] }
+	]
+}

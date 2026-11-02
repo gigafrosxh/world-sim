@@ -1,0 +1,13 @@
+node_modules
+dist
+raw-data
+# Claude Code Game Studios (lokal)
+.claude/settings.local.json
+.claude/agent-memory/
+.claude/worktrees/
+CLAUDE.local.md
+project.local.yaml
+production/session-logs/
+production/session-state/
+.scratch/
+docs/consistency-failures.md
