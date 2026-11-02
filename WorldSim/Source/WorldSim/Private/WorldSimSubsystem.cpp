@@ -202,9 +202,9 @@ float UWorldSimSubsystem::GetLocalHour() const
 	return D.Hour + D.Minute / 60.f;
 }
 
-FWSHud UWorldSimSubsystem::GetHud() const
+FWSHudData UWorldSimSubsystem::GetHud() const
 {
-	FWSHud H;
+	FWSHudData H;
 	if (!bHasGame) return H;
 	static const TCHAR* Days[] = {TEXT("So"), TEXT("Mo"), TEXT("Di"), TEXT("Mi"), TEXT("Do"), TEXT("Fr"), TEXT("Sa")};
 	const WS::CivilDate D = WS::ToCivil(WS::LocalTime(Game));

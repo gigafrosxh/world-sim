@@ -44,20 +44,20 @@ private:
 	enum class EShape : uint8 { Cube, Cylinder, Sphere, Cone };
 
 	/** Ein Bauteil im lokalen Gebäuderaum: X = nach vorne (Straße), Y = rechts, Z = oben, Maße in Metern. */
-	struct FFrame
+	struct FLocalFrame
 	{
 		FVector2D Center; // cm, Welt
 		float Yaw = 0;
 		FVector World(const FVector& LocalM) const;
 	};
 
-	void Add(EShape Shape, const FFrame& F, const FVector& CenterM, const FVector& SizeM, const FLinearColor& Color, const FRotator& LocalRot = FRotator::ZeroRotator);
-	void Box(const FFrame& F, const FVector& CenterM, const FVector& SizeM, const FLinearColor& Color, const FRotator& Rot = FRotator::ZeroRotator)
+	void Add(EShape Shape, const FLocalFrame& F, const FVector& CenterM, const FVector& SizeM, const FLinearColor& Color, const FRotator& LocalRot = FRotator::ZeroRotator);
+	void Box(const FLocalFrame& F, const FVector& CenterM, const FVector& SizeM, const FLinearColor& Color, const FRotator& Rot = FRotator::ZeroRotator)
 	{
 		Add(EShape::Cube, F, CenterM, SizeM, Color, Rot);
 	}
-	void GableRoof(const FFrame& F, float W, float D, float Z, float Pitch, const FLinearColor& Color);
-	void WindowBands(const FFrame& F, float W, float D, int32 Floors, float FloorH, const FLinearColor& Color);
+	void GableRoof(const FLocalFrame& F, float W, float D, float Z, float Pitch, const FLinearColor& Color);
+	void WindowBands(const FLocalFrame& F, float W, float D, int32 Floors, float FloorH, const FLinearColor& Color);
 
 	void DrawBuilding(const FWSPlot& P, EWSVisual Visual, FVector2D SizeM, float Height, float Grow);
 	void DrawSite(const FWSPlot& P);

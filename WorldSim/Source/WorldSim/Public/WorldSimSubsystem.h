@@ -47,7 +47,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "WorldSim|Zeit") TArray<float> GetSpeeds() const;
 	/** Ortszeit in Stunden (0–24) für Tag/Nacht. */
 	UFUNCTION(BlueprintPure, Category = "WorldSim|Zeit") float GetLocalHour() const;
-	UFUNCTION(BlueprintPure, Category = "WorldSim") FWSHud GetHud() const;
+	UFUNCTION(BlueprintPure, Category = "WorldSim") FWSHudData GetHud() const;
 
 	// ---------- Stadt ----------
 	UFUNCTION(BlueprintPure, Category = "WorldSim|Stadt") FString GetPlayerCityId() const;

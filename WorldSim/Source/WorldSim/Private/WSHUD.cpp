@@ -42,7 +42,7 @@ void AWSHUD::DrawHUD()
 	const FLinearColor Muted(0.7f, 0.74f, 0.8f), Good(0.45f, 0.9f, 0.5f), Bad(1.f, 0.45f, 0.4f), Gold(1.f, 0.82f, 0.25f);
 
 	// Kopfzeile
-	const FWSHud Hud = S->GetHud();
+	const FWSHudData Hud = S->GetHud();
 	Panel(0, 0, W, 54);
 	Line(Hud.DateTime + TEXT("   ") + Hud.Where, 16, 6, FLinearColor::White, 1.1f);
 	Line(Hud.bPaused ? FString(TEXT("PAUSE")) : FString::Printf(TEXT("Läuft  %gx"), Hud.Speed), 16, 30, Hud.bPaused ? Gold : Good);

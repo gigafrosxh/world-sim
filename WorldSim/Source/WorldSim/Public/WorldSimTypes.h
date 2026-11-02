@@ -24,7 +24,7 @@ enum class EWSBet : uint8 { Number, Red, Black, Even, Odd, Low, High, Dozen };
 
 /** Kopfzeile: Datum, Kontostände, Monatsbilanz. */
 USTRUCT(BlueprintType)
-struct FWSHud
+struct FWSHudData
 {
 	GENERATED_BODY()
 	UPROPERTY(BlueprintReadOnly) FString DateTime;

@@ -64,7 +64,7 @@ void AWSCityActor::Tick(float DeltaSeconds)
 	if (RefreshTimer >= 1.f) Rebuild();
 }
 
-FVector AWSCityActor::FFrame::World(const FVector& LocalM) const
+FVector AWSCityActor::FLocalFrame::World(const FVector& LocalM) const
 {
 	const FVector L = FRotator(0, Yaw, 0).RotateVector(LocalM * 100.0);
 	return FVector(Center.X + L.X, Center.Y + L.Y, L.Z);
@@ -87,7 +87,7 @@ UInstancedStaticMeshComponent* AWSCityActor::Ism(EShape Shape, const FLinearColo
 	return Comp;
 }
 
-void AWSCityActor::Add(EShape Shape, const FFrame& F, const FVector& CenterM, const FVector& SizeM, const FLinearColor& Color, const FRotator& LocalRot)
+void AWSCityActor::Add(EShape Shape, const FLocalFrame& F, const FVector& CenterM, const FVector& SizeM, const FLinearColor& Color, const FRotator& LocalRot)
 {
 	const FColor C = Color.ToFColor(true);
 	const uint32 Key = ((uint32)Shape << 24) | ((C.R >> 2) << 12) | ((C.G >> 2) << 6) | (C.B >> 2);
@@ -96,7 +96,7 @@ void AWSCityActor::Add(EShape Shape, const FFrame& F, const FVector& CenterM, co
 	Pending.FindOrAdd(Key).Add(FTransform(Q, F.World(CenterM), SizeM)); // Grundformen sind 1 m groß
 }
 
-void AWSCityActor::GableRoof(const FFrame& F, float W, float D, float Z, float Pitch, const FLinearColor& Color)
+void AWSCityActor::GableRoof(const FLocalFrame& F, float W, float D, float Z, float Pitch, const FLinearColor& Color)
 {
 	// Zwei geneigte Platten, First quer zur Straße (entlang Y).
 	const float Half = D / 2;
@@ -108,14 +108,14 @@ void AWSCityActor::GableRoof(const FFrame& F, float W, float D, float Z, float P
 	if (Pitch >= 40) Box(F, FVector(0, 0, Z), FVector(D / FMath::Sqrt(2.f), W * 0.98f, D / FMath::Sqrt(2.f)), Color, FRotator(45, 0, 0));
 }
 
-void AWSCityActor::WindowBands(const FFrame& F, float W, float D, int32 Floors, float FloorH, const FLinearColor& Color)
+void AWSCityActor::WindowBands(const FLocalFrame& F, float W, float D, int32 Floors, float FloorH, const FLinearColor& Color)
 {
 	for (int32 I = 0; I < Floors; ++I) Box(F, FVector(0, 0, I * FloorH + FloorH * 0.55f), FVector(D + 0.12f, W + 0.12f, FloorH * 0.38f), Color);
 }
 
 void AWSCityActor::DrawPlotGround(const FWSPlot& P)
 {
-	const FFrame F{P.Center, 0};
+	const FLocalFrame F{P.Center, 0};
 	const FVector2D S = P.Size / 100.0;
 	FLinearColor Ground = P.Zone == EWSZone::Industrial ? Hex(0x9c978c) : P.Zone == EWSZone::Commercial ? Hex(0xb8ad97) : P.Zone == EWSZone::Park ? Hex(0x4f7d3a) : Hex(0x6e9150);
 	if (P.ProjectId >= 0) Ground = Hex(0x8a6a48); // aufgegrabene Erde
@@ -142,7 +142,7 @@ void AWSCityActor::DrawPlotGround(const FWSPlot& P)
 	// "Zu verkaufen"/"Zu vermieten"-Tafel an der Straßenseite
 	if ((P.bForSale || P.bForRent) && !P.bMine)
 	{
-		const FFrame Facing{P.Center, P.Yaw};
+		const FLocalFrame Facing{P.Center, P.Yaw};
 		const float Front = (FMath::IsNearlyZero(FMath::Fmod(FMath::Abs(P.Yaw), 180.f)) ? S.X : S.Y) / 2 - 1.5f;
 		Box(Facing, FVector(Front, 0, 1.2f), FVector(0.12f, 0.12f, 2.4f), Hex(0x6b5a45));
 		Box(Facing, FVector(Front + 0.1f, 0, 2.3f), FVector(0.08f, 1.8f, 1.0f), P.bForSale ? Hex(0xd23b2f) : Hex(0x2f7bd2));
@@ -153,7 +153,7 @@ void AWSCityActor::DrawRoad(const FWSRoad& R)
 {
 	const FVector2D Mid = (R.From + R.To) / 2;
 	const FVector2D D = R.To - R.From;
-	const FFrame F{Mid, (float)FMath::RadiansToDegrees(FMath::Atan2(D.Y, D.X))};
+	const FLocalFrame F{Mid, (float)FMath::RadiansToDegrees(FMath::Atan2(D.Y, D.X))};
 	const float Len = D.Size() / 100.f, W = R.Width / 100.f;
 	Box(F, FVector(0, 0, 0.04f), FVector(Len + W, W, 0.08f), R.bHighway ? Hex(0x55595f) : Asphalt);
 	// Mittellinie, Autobahn mit Mittelstreifen
@@ -163,7 +163,7 @@ void AWSCityActor::DrawRoad(const FWSRoad& R)
 
 void AWSCityActor::DrawBuilding(const FWSPlot& P, EWSVisual Visual, FVector2D SizeM, float Height, float Grow)
 {
-	const FFrame F{P.Center, P.Yaw};
+	const FLocalFrame F{P.Center, P.Yaw};
 	// Nach dem Drehen: X = Tiefe (zur Straße), Y = Breite
 	const bool bSideways = !FMath::IsNearlyZero(FMath::Fmod(FMath::Abs(P.Yaw), 180.f));
 	float D = bSideways ? SizeM.Y : SizeM.X;
@@ -313,7 +313,7 @@ void AWSCityActor::DrawBuilding(const FWSPlot& P, EWSVisual Visual, FVector2D Si
 
 void AWSCityActor::DrawSite(const FWSPlot& P)
 {
-	const FFrame F{P.Center, P.Yaw};
+	const FLocalFrame F{P.Center, P.Yaw};
 	const bool bSideways = !FMath::IsNearlyZero(FMath::Fmod(FMath::Abs(P.Yaw), 180.f));
 	const FVector2D Plot = P.Size / 100.0;
 	const float PD = bSideways ? Plot.Y : Plot.X, PW = bSideways ? Plot.X : Plot.Y;
@@ -416,7 +416,7 @@ void AWSCityActor::Rebuild()
 	if (Bounds.bIsValid)
 	{
 		const FVector2D Ext = Bounds.GetSize() / 100.0 + FVector2D(400, 400);
-		Box(FFrame{Bounds.GetCenter(), 0}, FVector(0, 0, -0.05f), FVector(Ext.X, Ext.Y, 0.1f), Hex(0x5f7d45));
+		Box(FLocalFrame{Bounds.GetCenter(), 0}, FVector(0, 0, -0.05f), FVector(Ext.X, Ext.Y, 0.1f), Hex(0x5f7d45));
 	}
 
 	for (const FWSRoad& R : S->GetRoads(CityId)) DrawRoad(R);
