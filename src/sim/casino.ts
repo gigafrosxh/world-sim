@@ -29,7 +29,8 @@ export function payoutMultiplier(bet: Bet, result: number): number {
 export function casinoHere(s: GameState): string | null {
   if (s.player.travel) return null;
   const loc = getLocation(s.player.locId);
-  return CASINOS.find((c) => distanceKm(c, loc) < 25)?.name ?? null;
+  const near = CASINOS.map((c) => ({ c, d: distanceKm(c, loc) })).filter((x) => x.d < 25).sort((a, b) => a.d - b.d);
+  return near[0]?.c.name ?? null;
 }
 
 export function spin(s: GameState, bet: Bet, stake: number, random = Math.random): { result: number; win: number } {
