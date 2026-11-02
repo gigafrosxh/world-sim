@@ -1,6 +1,7 @@
 import { registerWorld, allLocations } from './sim/world';
 import { WorldMap, type MapData } from './render/worldMap';
 import { App } from './ui/app';
+import * as G from './sim/game';
 
 async function json<T>(name: string): Promise<T> {
   const r = await fetch(`${import.meta.env.BASE_URL}data/${name}.json`);
@@ -17,7 +18,7 @@ async function boot() {
   const world = new WorldMap({ countries, lakes, highways, railways, ferries, ports }, document.getElementById('view')!);
   world.setLocations(allLocations());
   const app = new App(world);
-  (window as any).app = app;
+  Object.assign(window as any, { app, sim: G }); // für Konsole/Tests
   app.showStart();
 }
 

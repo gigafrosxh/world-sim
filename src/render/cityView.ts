@@ -298,7 +298,11 @@ export class CityView {
     if (!isModule && ph === 0) {
       const pit = M.box(bw + 2, 0.3, bd + 2, M.solid('#6b4f35'), 0, -0.2, 0);
       g.add(pit);
-      for (let i = 0; i < 4; i++) g.add(Object.assign(new THREE.Mesh(new THREE.ConeGeometry(2.4, 2, 6), M.solid('#7a5a3c', { flatShading: true })), { position: new THREE.Vector3(bw / 2 + 4, 1, -bd / 2 + i * 4) }));
+      for (let i = 0; i < 4; i++) {
+        const heap = new THREE.Mesh(new THREE.ConeGeometry(2.4, 2, 6), M.solid('#7a5a3c', { flatShading: true }));
+        heap.position.set(bw / 2 + 4, 1, -bd / 2 + i * 4);
+        g.add(heap);
+      }
     }
     if (isModule ? ph >= 0 : ph >= 1) {
       const slabProgress = !isModule && ph === 1 ? within : 1;

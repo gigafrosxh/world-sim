@@ -186,6 +186,7 @@ export class App {
     const dt = Math.min(0.1, (now - this.lastClock) / 1000);
     this.lastClock = now;
     const s = this.s;
+    if (s) this.flushNotices();
     if (s && this.skipUntil) {
       // Bis zu 3 Spieltage pro Bild; stoppt beim ersten Ereignis
       const end = Math.min(this.skipUntil, s.t + 3 * G.DAY);
@@ -204,10 +205,7 @@ export class App {
       }
     }
     if (s) {
-      while (s.notices.length) {
-        const n = s.notices.shift()!;
-        this.toast(n.text, n.kind);
-      }
+      this.flushNotices();
       const loc = getLocation(s.player.locId);
       this.world.setPlayer(loc.lon, loc.lat);
     }
@@ -337,6 +335,14 @@ export class App {
   }
 
   // ---------- Hinweise ----------
+  private flushNotices() {
+    const s = this.s;
+    while (s && s.notices.length) {
+      const n = s.notices.shift()!;
+      this.toast(n.text, n.kind);
+    }
+  }
+
   toast(text: string, kind: 'info' | 'good' | 'bad' = 'info') {
     const el = document.createElement('div');
     el.className = 'notice ' + kind;

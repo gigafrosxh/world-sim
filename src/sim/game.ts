@@ -464,7 +464,7 @@ export function loanLimit(s: GameState, holder: Account): number {
   let property = 0;
   for (const [id, o] of Object.entries(s.plots)) if (o.owner === holder) property += assetValue(s, id);
   const open = s.loans.filter((l) => l.holder === holder).reduce((a, l) => a + l.remaining, 0);
-  const base = holder === 'company' ? (s.company?.active ? s.company.equityIn * 6 + e.startBudget * 2 : 0) : e.startBudget * 1.5;
+  const base = holder === 'company' ? (s.company?.active ? s.company.equityIn * 4 + e.startBudget * 2 : 0) : e.startBudget * 1.5;
   return Math.max(0, Math.round(base + property * 0.7 - open));
 }
 
