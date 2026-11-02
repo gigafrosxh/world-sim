@@ -1,0 +1,13 @@
+Binaries/
+Intermediate/
+Saved/
+DerivedDataCache/
+.vs/
+*.sln
+*.VC.db
+*.opensdf
+*.sdf
+*.suo
+*.xcworkspace
+Tests/sim_tests
+Plugins/UnrealClaude/

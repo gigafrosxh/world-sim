@@ -10,18 +10,29 @@ Ein Wirtschafts- und Lebenssimulator auf einer echten Weltkarte. Du startest als
 |---|---|---|
 | ![](docs/screenshot-weltkarte.png) | ![](docs/screenshot-stadt.png) | ![](docs/screenshot-baustelle.png) |
 
-## Starten
+## Aufbau
+
+| Ordner | Inhalt |
+|---|---|
+| `WorldSim/` | **Unreal-Engine-5.7-Projekt** (Hauptweg). C++-Simulationskern + Weltkarte, Stadt, Kamera, HUD. Start: [WorldSim/SETUP.md](WorldSim/SETUP.md) |
+| `prototype-web/` | Spielbarer Browser-Prototyp (TypeScript, Three.js), von dem der Kern portiert wurde |
+
+### Unreal
+
+Siehe [WorldSim/SETUP.md](WorldSim/SETUP.md). Simulationstests ohne Engine: `cd WorldSim && bash Tests/run.sh`.
+
+### Web-Prototyp
 
 ```bash
+cd prototype-web
 npm install
 npm run dev      # http://localhost:5173
 npm test         # Simulationstests
-npm run build    # Produktions-Build in dist/
 ```
 
-Die Kartendaten liegen fertig in `public/data/`. Neu erzeugen aus Natural Earth: `npm run prepare-data` (lädt die Rohdaten nach `raw-data/`).
+Die Kartendaten liegen fertig in `prototype-web/public/data/`. Neu erzeugen aus Natural Earth: `npm run prepare-data`.
 
-## Steuerung
+### Steuerung (Web-Prototyp)
 
 | Aktion | Eingabe |
 |---|---|
